@@ -46,33 +46,6 @@ readRegion = function(x_file) {
 #===============================================#
 
 #===============================================#
-readTfile = function(t_file) {
-    # Criando conexao com o arquivo .T
-    con = file(t_file, "r")
-    bntLines = readLines(con)
-
-    # Encerrando conexao com o arquivo .T
-    close(con)
-
-    # Removendo caracteres especiais de tabulacao
-    bntLines = gsub("\t", "  ", bntLines)
-    
-    # Gerando cabecalho
-    bntHeader = gsub("@", "", bntLines[1]) |> strsplit(" ")
-    bntHeader = bntHeader[[1]]
-    bntHeader = bntHeader[bntHeader != ""]
-
-    # Gerando data.table
-    bntData = fread(text = bntLines[-1])
-    names(bntData) = bntHeader
-    bntData$DOY = yday(bntData$DATE)
-
-    # Retornando dados
-    return(bntData)
-}
-#===============================================#
-
-#===============================================#
 # Funcao responsavel por ler os resultados do arquivo Evaluate.OUT
 readEvaluate = function(simulationDirectory, region) {
     # Localizando arquivo

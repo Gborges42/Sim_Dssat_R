@@ -11,7 +11,7 @@ compile.functions()
 load.functions()
 
 # Arquivo de Configuração
-# ATENÇÃO!!! Ao mudar o arquivo de configurção, será necessário mudar também dentro da função 
+# ATENÇÃO!!! Ao mudar o arquivo de configuração, será necessário mudar também dentro da função 
 # Lendo o arquivo de configuração para adquirir o input
 input = config.treatment(".//StartValues_bean.config")
 # Lendo arquivo de dados

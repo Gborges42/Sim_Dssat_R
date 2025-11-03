@@ -1,29 +1,32 @@
 #===============================================#
-evaluateDifference = function(evaluateData, calibration) {
-
+evaluateDifference = function(evaluateData, calibration, metodo_score) {
   # Obtendo variaveis simuladas de calibracao
   variableSimulated.index = paste0(sprintf("%sS", calibration), collapse = "|") |> grep(names(evaluateData))
 
   # Obtendo variaveis observadas de calibracao
   variableObserved.index = paste0(sprintf("%sM", calibration), collapse = "|") |> grep(names(evaluateData))
 
-  rmse.list = lapply(calibration, function(calibration, evaluateData){
+  score.list = lapply(calibration, function(calibration, evaluateData, metodo_score){
+    
+    metodos_erro <- list(
+      rmse = rmse,
+      mape = mape
+    )
 
     # Obtendo index variaveis de calibracao
     variable.index = grep(paste0(calibration, collapse = "|"), names(evaluateData))
-  
+
     # Obtendo variaveis simuladas
     calibrationData = evaluateData[, ..variable.index]
     calibrationData[calibrationData == -99] = NA
-    
-    # Fazendo RMSE da variável
-    rmse <- sqrt(mean((calibrationData[[1]] - calibrationData[[2]])^2))
 
-    return(rmse)
-  }, evaluateData)
+    # Fazendo RMSE da variável
+    score <- metodos_erro[[metodo_score]](calibrationData)
+    return(score)
+  }, evaluateData, metodo_score)
   
   # Retorna a média dos RMSE obtidos
-  return(mean(unlist(rmse.list)))
+  return(mean(unlist(score.list)))
 }
 #===============================================#
 
@@ -76,9 +79,23 @@ plantgroDifference = function(plantgroData, tData, calibration) {
 
 #===============================================#
 # Erro quadrado medio relativo (Para fazer a calibracao do modelo)
-rmse = function(SSERow) {
-  RMSE = sqrt(mean(SSERow^2, na.rm = T))
-  return(RMSE)
+rmse <- function(x) {
+  y    <- as.numeric(x[[1]])
+  yhat <- as.numeric(x[[2]])
+  
+  # cálculo do RMSE (mesmas unidades de y)
+  return(sqrt(mean((y - yhat)^2)))
+}
+#===============================================#
+
+#===============================================#
+# Erro Percentual Absoluto Médio (Para fazer a calibracao do modelo)
+mape <- function(x) {
+  y     <- as.numeric(x[[1]])
+  yhat  <- as.numeric(x[[2]])
+  
+  # cálculo do MAPE (%)
+  return(mean(abs(y - yhat) / abs(y),na.rm=TRUE))
 }
 #===============================================#
 

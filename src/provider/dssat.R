@@ -8,12 +8,14 @@ simulacao_dssat = function(df, inputList){
     nomeArquivo <- args$nomeArquivo
     # Determinando os parâmetros
     paramSim = unlist(args[names(args) %in% gsub("-","", inputList$coefficients)])
-    
+
     #==========================================================================#
     # Executando SSE 
     run = simulationFunction(paramSim, gsub(":", "", sprintf("iteration_%s", format(Sys.time(), "%H:%M:%OS3"))), inputList)
-    
+
     # Adicionando nome da simulação
+    calibration = as.character(inputList$calibration)
+    run$score = evaluateDifference(run, calibration, inputList$metodo_score)
     run$simulacao = nomeArquivo
     return(run)
   })
