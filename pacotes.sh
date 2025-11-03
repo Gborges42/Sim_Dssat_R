@@ -1,0 +1,1 @@
+Rscript instalar_pacotes.R

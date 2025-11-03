@@ -79,23 +79,26 @@ plantgroDifference = function(plantgroData, tData, calibration) {
 
 #===============================================#
 # Erro quadrado medio relativo (Para fazer a calibracao do modelo)
-rmse <- function(x) {
+rmse <- function(x, na_rm = TRUE) {
   y    <- as.numeric(x[[1]])
   yhat <- as.numeric(x[[2]])
-  
-  # cálculo do RMSE (mesmas unidades de y)
-  return(sqrt(mean((y - yhat)^2)))
+  if (na_rm) {
+    ok <- !(is.na(y) | is.na(yhat)); y <- y[ok]; yhat <- yhat[ok]
+  }
+  sqrt(mean((y - yhat)^2))
 }
 #===============================================#
 
 #===============================================#
 # Erro Percentual Absoluto Médio (Para fazer a calibracao do modelo)
-mape <- function(x) {
-  y     <- as.numeric(x[[1]])
-  yhat  <- as.numeric(x[[2]])
-  
-  # cálculo do MAPE (%)
-  return(mean(abs(y - yhat) / abs(y),na.rm=TRUE))
+mape <- function(x, na_rm = TRUE) {
+  y    <- as.numeric(x[[1]])
+  yhat <- as.numeric(x[[2]])
+  if (na_rm) {
+    ok <- !(is.na(y) | is.na(yhat)); y <- y[ok]; yhat <- yhat[ok]
+  }
+  eps <- .Machine$double.eps
+  mean(abs(y - yhat) / pmax(abs(y), eps))
 }
 #===============================================#
 

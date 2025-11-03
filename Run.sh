@@ -1,1 +1,1 @@
-Rscript start_Dssat.R
+Rscript start_Dssat.R && Rscript start_Graphs.R
